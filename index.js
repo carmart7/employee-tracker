@@ -25,7 +25,7 @@ async function init() {
     while (choice != 'exit') {
         switch(choice) {
             case 'viewEmployees':
-                console.log('function goes here for ' + choice);
+                await displayEmployees();
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'addEmployee':
