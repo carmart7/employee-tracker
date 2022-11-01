@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { displayDepartments, endConnection } = require('./database');
+const { displayEmployees, addEmployee, updateEmployeeRole, displayRoles, addRole, displayDepartments, addDepartment, endConnection } = require('./database');
 const { baseQuestions } = require('./questions');
 
 
@@ -37,7 +37,7 @@ async function init() {
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'viewRoles':
-                console.log('function goes here for ' + choice);
+                await displayRoles();
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'addRole':
