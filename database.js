@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const { addQuestion } = require('./questions')
+const { addDepartmentQuestions, addRoleQuestions } = require('./questions')
 require('dotenv').config();
 
 
@@ -30,7 +30,7 @@ async function displayEmployees () {
 }
 
 async function addEmployee () {
-
+    
 }
 
 async function updateEmployeeRole () {
@@ -53,7 +53,24 @@ async function displayRoles () {
 }
 
 async function addRole () {
+    let role = await inquirer.prompt(addRoleQuestions);
+    let departments = await getDepartments();
+    console.log(departments);
+    let departmentList = [];
+    for(let i = 0; i < departments.length; i++) {
+        let obj = {};
+        obj.name = `${departments[i].department}`;
+        obj.value = `${departments[i].id}`;
+        departmentList.push(obj);
+    }
 
+    let roleDepartmentID = (await inquirer.prompt({message: 'What department is the role in?', name: 'id', type:'list', choices: departmentList})).id;
+    
+    db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [role.name, role.salary, roleDepartmentID], (err, result) => {
+        if (err) {
+            console.error(err);
+        }
+    });
 }
 
 async function displayDepartments () {
@@ -72,12 +89,24 @@ async function displayDepartments () {
 }
 
 async function addDepartment () {
-    let name = (await inquirer.prompt(addQuestion)).name;
+    let name = (await inquirer.prompt(addDepartmentQuestions)).name.trim();
     db.query('INSERT INTO department (name) VALUES (?)', name, (err, result) => {
         if (err) {
             console.error(err);
         }
     } )
+}
+
+async function getDepartments () {
+    let promise = new Promise(function (resolve, reject) {
+        db.query('SELECT id, name AS department FROM department', (err, result) => {
+            if (err) {
+                reject(err);
+            }
+                resolve(result);
+        });
+    });
+    return promise;
 }
 
 function endConnection () {

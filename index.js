@@ -41,7 +41,7 @@ async function init() {
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'addRole':
-                console.log('function goes here for ' + choice);
+                await addRole();
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'viewDepartments':

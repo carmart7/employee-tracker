@@ -9,13 +9,19 @@ const baseQuestions = [
         {name: 'Add Department', value: 'addDepartment'},
         {name: 'Exit', value: 'exit'}
     ]}
-]
+];
 
-const addQuestion = [
+const addDepartmentQuestions = [
     {message: 'What is the name of the department?', name: 'name'}
-]
+];
+
+const addRoleQuestions = [
+    {message: 'What is the name of the role?', name: 'name'},
+    {message: 'What is the salary of the role?', name: 'salary'}
+];
 
 module.exports = {
     baseQuestions,
-    addQuestion,
+    addDepartmentQuestions,
+    addRoleQuestions
 }
