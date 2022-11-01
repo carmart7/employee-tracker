@@ -29,7 +29,7 @@ async function init() {
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'addEmployee':
-                console.log('function goes here for ' + choice);
+                await addEmployee();
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'updateEmployeeRole':

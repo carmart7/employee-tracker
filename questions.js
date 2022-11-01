@@ -20,8 +20,14 @@ const addRoleQuestions = [
     {message: 'What is the salary of the role?', name: 'salary'}
 ];
 
+const addEmployeeQuestions = [
+    {message: "What is the employee's first name?", name:'firstName'},
+    {message: "What is the employee's last name?", name:'lastName'}
+]
+
 module.exports = {
     baseQuestions,
     addDepartmentQuestions,
-    addRoleQuestions
+    addRoleQuestions,
+    addEmployeeQuestions
 }

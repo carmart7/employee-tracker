@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const { addDepartmentQuestions, addRoleQuestions } = require('./questions')
+const { addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions } = require('./questions')
 require('dotenv').config();
 
 
@@ -30,7 +30,48 @@ async function displayEmployees () {
 }
 
 async function addEmployee () {
-    
+    let employee = await inquirer.prompt(addEmployeeQuestions);
+    let roles = await getRoles();
+    let employees = await getEmployees();
+    let roleList = [];
+    for(let i = 0; i < roles.length; i++) {
+        let obj = {};
+        obj.name = `${roles[i].title}`;
+        obj.value = `${roles[i].id}`;
+        roleList.push(obj);
+    }
+    let employeeList = [{name: 'none', value: 'null'}];
+    for(let i = 0; i < employees.length; i++) {
+        let obj = {};
+        obj.name = `${employees[i].name}`;
+        obj.value = `${employees[i].id}`;
+        employeeList.push(obj);
+    }
+
+    let employeeRoleID = (await inquirer.prompt({message: 'What role will the employee have?', name: 'id', type:'list', choices: roleList})).id;
+    let employeeManagerID = (await inquirer.prompt({message: 'Who is the manager?', name: 'id', type:'list', choices: employeeList})).id;
+    let promise = new Promise (function (resolve, reject) {
+        if(employeeManagerID == 'null') {
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, null)', [employee.firstName, employee.lastName, employeeRoleID], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                }
+                console.log(`Added ${employee.firstName} ${employee.lastName} to the database`);
+                resolve(result);
+            });
+        } else {
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [employee.firstName, employee.lastName, employeeRoleID, employeeManagerID], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                }
+                console.log(`Added ${employee.firstName} ${employee.lastName} to the database`);
+                resolve(result);
+            });
+        }
+    });
+    return promise;
 }
 
 async function updateEmployeeRole () {
@@ -55,7 +96,6 @@ async function displayRoles () {
 async function addRole () {
     let role = await inquirer.prompt(addRoleQuestions);
     let departments = await getDepartments();
-    console.log(departments);
     let departmentList = [];
     for(let i = 0; i < departments.length; i++) {
         let obj = {};
@@ -65,12 +105,17 @@ async function addRole () {
     }
 
     let roleDepartmentID = (await inquirer.prompt({message: 'What department is the role in?', name: 'id', type:'list', choices: departmentList})).id;
-    
-    db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [role.name, role.salary, roleDepartmentID], (err, result) => {
-        if (err) {
-            console.error(err);
-        }
+    let promise = new Promise(function (resolve, reject) {
+        db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [role.name.trim(), role.salary.trim(), roleDepartmentID], (err, result) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            }
+            console.log(`Added ${role.name.trim()} to the database`);
+            resolve(result);
+        });
     });
+    return promise;
 }
 
 async function displayDepartments () {
@@ -94,12 +139,38 @@ async function addDepartment () {
         if (err) {
             console.error(err);
         }
+        console.log(`Added ${name} to the database`);
     } )
+
 }
 
 async function getDepartments () {
     let promise = new Promise(function (resolve, reject) {
         db.query('SELECT id, name AS department FROM department', (err, result) => {
+            if (err) {
+                reject(err);
+            }
+                resolve(result);
+        });
+    });
+    return promise;
+}
+
+async function getRoles () {
+    let promise = new Promise(function (resolve, reject) {
+        db.query('SELECT id, title FROM role', (err, result) => {
+            if (err) {
+                reject(err);
+            }
+                resolve(result);
+        });
+    });
+    return promise;
+}
+
+async function getEmployees () {
+    let promise = new Promise(function (resolve, reject) {
+        db.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee', (err, result) => {
             if (err) {
                 reject(err);
             }
