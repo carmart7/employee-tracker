@@ -1,5 +1,5 @@
 const baseQuestions = [
-    {message: 'What would you like to do next?', name: 'choice', type: 'list', choices: [
+    {message: 'What would you like to do?', name: 'choice', type: 'list', choices: [
         {name: 'View All Employees', value: 'viewEmployees'},
         {name: 'Add Employee', value: 'addEmployee'},
         {name: 'Update Employee Role', value: 'updateEmployeeRole'},
@@ -11,6 +11,11 @@ const baseQuestions = [
     ]}
 ]
 
+const addQuestion = [
+    {message: 'What is the name of the department?', name: 'name'}
+]
+
 module.exports = {
     baseQuestions,
+    addQuestion,
 }

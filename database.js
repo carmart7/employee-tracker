@@ -1,5 +1,7 @@
 const mysql = require('mysql2');
+const inquirer = require('inquirer');
 const cTable = require('console.table');
+const { addQuestion } = require('./questions')
 require('dotenv').config();
 
 
@@ -69,7 +71,8 @@ async function displayDepartments () {
     return promise;
 }
 
-async function addDepartment (name) {
+async function addDepartment () {
+    let name = (await inquirer.prompt(addQuestion)).name;
     db.query('INSERT INTO department (name) VALUES (?)', name, (err, result) => {
         if (err) {
             console.error(err);

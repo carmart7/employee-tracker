@@ -49,7 +49,7 @@ async function init() {
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
             case 'addDepartment':
-                console.log('function goes here for ' + choice);
+                await addDepartment();
                 choice = (await inquirer.prompt(baseQuestions)).choice;
                 break;
         }
