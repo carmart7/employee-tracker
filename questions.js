@@ -23,7 +23,7 @@ const addRoleQuestions = [
 const addEmployeeQuestions = [
     {message: "What is the employee's first name?", name:'firstName'},
     {message: "What is the employee's last name?", name:'lastName'}
-]
+];
 
 module.exports = {
     baseQuestions,

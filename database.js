@@ -52,7 +52,7 @@ async function addEmployee () {
     let employeeManagerID = (await inquirer.prompt({message: 'Who is the manager?', name: 'id', type:'list', choices: employeeList})).id;
     let promise = new Promise (function (resolve, reject) {
         if(employeeManagerID == 'null') {
-            db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, null)', [employee.firstName, employee.lastName, employeeRoleID], (err, result) => {
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, null)', [employee.firstName.trim(), employee.lastName.trim(), employeeRoleID], (err, result) => {
                 if (err) {
                     console.error(err);
                     reject(err);
@@ -75,7 +75,36 @@ async function addEmployee () {
 }
 
 async function updateEmployeeRole () {
+    let employees = await getEmployees();
+    let roles = await getRoles();
+    let employeeList = [];
+    for(let i = 0; i < employees.length; i++) {
+        let obj = {};
+        obj.name = `${employees[i].name}`;
+        obj.value = `${employees[i].id}`;
+        employeeList.push(obj);
+    }
+    let roleList = [];
+    for(let i = 0; i < roles.length; i++) {
+        let obj = {};
+        obj.name = `${roles[i].title}`;
+        obj.value = `${roles[i].id}`;
+        roleList.push(obj);
+    }
 
+    let employeeChosen = (await inquirer.prompt({message: "Which employee's role would you like to update?", name: 'id', type:'list', choices: employeeList}));
+    let roleID = (await inquirer.prompt({message: "Which role do you want to assign the selected employee?", name: 'id', type:'list', choices: roleList})).id;
+    let promise = new Promise(function (resolve, reject) {
+        db.query('UPDATE employee SET role_id = ? WHERE id = ?', [roleID, employeeChosen.id], (err, result) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            }
+            console.log(`Updated ${employeeChosen.name} in the database`);
+            resolve(result);
+        });
+    })
+    return promise;
 }
 
 async function displayRoles () {
