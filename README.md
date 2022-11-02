@@ -6,7 +6,9 @@ This command line application allows the user to view and manage information sto
 
 
 
-https://user-images.githubusercontent.com/50060256/197904711-a4a8d71d-225d-445b-8f5f-fdb4b0f82428.mp4
+https://user-images.githubusercontent.com/50060256/199368710-dfa0d589-3af4-4de9-8855-0bcd54ca3c71.mp4
+
+
 
 
 Inquirer is used to allow the user to choose between many options of ways to look and modify data stored in the database. It also allows for the user to give input that will be written into the database.
